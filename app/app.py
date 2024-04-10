@@ -1,11 +1,16 @@
 from flask import Flask
 from automations.file_remover import remove_files
 from pymongo import MongoClient
-import config
+from config import get_config
+import os
 
 app = Flask(__name__)
 
-client = MongoClient(config.host, config.port, username=config.username, password=config.password)
+config = get_config()
+app.config.from_object(config)
+dev_config= config.MONGODB_SETTINGS
+
+client = MongoClient(dev_config['host'], dev_config['port'], username=dev_config['username'], password=dev_config['password'])
 db = client['demo'] 
 collection = db['data'] 
 
