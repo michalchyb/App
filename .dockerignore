@@ -1,0 +1,11 @@
+__pycache__
+.DS_Store
+.vscode
+.env
+.venv
+
+helm/
+jenkins_home/
+kubernetes/
+.vscode
+__pycache__
