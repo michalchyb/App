@@ -1,5 +1,4 @@
-from flask import Flask
-from automations.file_remover import remove_files
+from flask import Flask, request
 from pymongo import MongoClient
 from config import get_config
 import os
@@ -14,17 +13,19 @@ client = MongoClient(dev_config['host'], dev_config['port'], username=dev_config
 db = client['demo'] 
 collection = db['data'] 
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+cert_file = os.path.join(current_dir, 'cert.pem')
+key_file = os.path.join(current_dir, 'key.pem')
+ssl_context = (cert_file, key_file)
+
+
 @app.route('/')
-def hello_geek():
+def test():
     return '<h1>Hello from Flask & Docker</h2>'
 
-@app.route('/add_data', methods=['', 'POST'])
+@app.route('/add_data', methods=['POST'])
 def add_data(): 
-    data = {
-            "logo": "John",
-            "age": 30
-        }
-    
+    data = request.json    
     if data:
         collection.insert_one(data)
         return 'Data added to MongoDB'
@@ -32,8 +33,9 @@ def add_data():
         return 'No data provided'
     
 
-def main():
+def main() -> None:
     print("Test")
 
 if __name__ == "__main__":
-    app.run(debug=True,ssl_context=('cert.pem', 'key.pem'))
+    main()
+    app.run(debug=True,ssl_context=(ssl_context))
