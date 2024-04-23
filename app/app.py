@@ -18,7 +18,7 @@ collection = db['data']
 def hello_geek():
     return '<h1>Hello from Flask & Docker</h2>'
 
-@app.route('/add_data', methods=['GET', 'POST'])
+@app.route('/add_data', methods=['', 'POST'])
 def add_data(): 
     data = {
             "logo": "John",
@@ -36,4 +36,4 @@ def main():
     print("Test")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,ssl_context=('cert.pem', 'key.pem'))
