@@ -47,4 +47,11 @@ spec:
         - name: MONGO_INITDB_ROOT_PASSWORD
           value: "pass"
         resources: {}
+        volumeMounts:
+        - name: "mongo-data-dir"
+          mountPath: "/data/db"
+      volumes:
+      - name: "mongo-data-dir"
+        persistentVolumeClaim:
+          claimName: "pvc"
 status: {}

@@ -16,7 +16,7 @@ spec:
         app: mongo-express
     spec:
       containers:
-      - image: mongo-express
+      - image: mongo-express:latest
         name: mongo-express
         ports:
         - containerPort: 8081
