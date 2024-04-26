@@ -1,8 +1,8 @@
 from flask import Flask, request
 from pymongo import MongoClient
-from config import get_config
+from project.config import get_config
 import os
-from health.routes import health
+from project.health.routes import health
 
 app = Flask(__name__)
 app.register_blueprint(health)
