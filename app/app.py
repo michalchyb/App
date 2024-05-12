@@ -1,8 +1,8 @@
 from flask import Flask, request
 from pymongo import MongoClient
 from project.config import get_config
-import os
 from project.health.routes import health
+from project.config.ssl_config import SSLConfig
 
 from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 
@@ -17,11 +17,6 @@ dev_config= config.MONGODB_SETTINGS
 client = MongoClient(dev_config['host'], dev_config['port'], username=dev_config['username'], password=dev_config['password'])
 db = client['demo'] 
 collection = db['data'] 
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-cert_file = os.path.join(current_dir, 'cert.pem')
-key_file = os.path.join(current_dir, 'key.pem')
-ssl_context = (cert_file, key_file)
 
 REQUESTS = Counter('http_requests_total', 'Total HTTP Requests', ['method', 'endpoint'])
 
@@ -49,4 +44,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    ssl_config = SSLConfig()
+    ssl_context = ssl_config.get_ssl_context()
     app.run(debug=True,ssl_context=(ssl_context))
