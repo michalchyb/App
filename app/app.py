@@ -1,6 +1,7 @@
 from flask import request
 from project.config.setup_app import setup_app
 from project.health.routes import health
+from project.market.shares import shares
 from project.config.ssl_config import SSLConfig
 
 from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
@@ -9,6 +10,7 @@ app, collection, config = setup_app()
 dev_config= config.MONGODB_SETTINGS
 app.config.from_object(config)
 app.register_blueprint(health)
+app.register_blueprint(shares)
 
 
 REQUESTS = Counter('http_requests_total', 'Total HTTP Requests', ['method', 'endpoint'])
