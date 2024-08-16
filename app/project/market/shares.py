@@ -1,6 +1,6 @@
+from datetime import datetime
 from flask import Blueprint
-import openpyxl
-
+import openpyxl 
 
 shares = Blueprint('market', __name__, url_prefix='/market')
 
@@ -27,7 +27,7 @@ class Share:
 
     @date.setter
     def date(self, value):
-        self._date = value
+        self._date = self.date_validator(value)
 
     # Ticker property
     @property
@@ -45,9 +45,28 @@ class Share:
 
     @money.setter
     def money(self, value):
-        self._money = value       
-        
-        
+        self._money = self.validate_money(value)      
+    
+    @staticmethod
+    def date_validator(value):
+        try:
+            return datetime.strptime(value, '%Y-%m-%d').date()
+        except ValueError:
+            raise ValueError(f"Invalid date format for date: {value}. Expected format: YYYY-MM-DD.")
+
+    @staticmethod
+    def validate_money(money_str):
+        try:
+            money_value = float(money_str)
+            if money_value <= 0:
+                raise ValueError(f"Money value must be positive. Got: {money_value}")
+            return money_value
+        except ValueError:
+            raise ValueError(f"Invalid money value: {money_str}. It must be a positive number.")
+     
+    def __repr__(self):
+        return f"Share(date={self.date}, ticker='{self.ticker}', money={self.money})"
+
 def read_excel_file_and_process_shares():
     wb = openpyxl.load_workbook(r"C:\Users\macy\VisualStudio\app\market.xlsx")
     sheet = wb["shares"]
@@ -56,4 +75,5 @@ def read_excel_file_and_process_shares():
         date, ticker, money = row
         share = Share(date=date, ticker=ticker, money=money)
         shares_list.append(share)
-    return shares_list
+    return 
+
