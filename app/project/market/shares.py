@@ -50,7 +50,7 @@ class Share:
     @staticmethod
     def date_validator(value):
         try:
-            return datetime.strptime(value, '%Y-%m-%d').date()
+            return datetime.strptime(str(value), '%d.%m.%Y').date()
         except ValueError:
             raise ValueError(f"Invalid date format for date: {value}. Expected format: YYYY-MM-DD.")
 
@@ -68,12 +68,22 @@ class Share:
         return f"Share(date={self.date}, ticker='{self.ticker}', money={self.money})"
 
 def read_excel_file_and_process_shares():
-    wb = openpyxl.load_workbook(r"C:\Users\macy\VisualStudio\app\market.xlsx")
+    file_path = r"C:\Users\macy\VisualStudio\app\market.xlsx"
+    wb = load_workbook(file_path)
     sheet = wb["shares"]
+    return process_sheet(sheet)
+
+
+def load_workbook(file_path) -> openpyxl.Workbook:
+    return openpyxl.load_workbook(file_path)
+
+def process_sheet(sheet) : 
     shares_list = []
     for row in sheet.iter_rows(min_row=2, values_only=True):
-        date, ticker, money = row
-        share = Share(date=date, ticker=ticker, money=money)
+        share = create_share_from_row(row)
         shares_list.append(share)
-    return 
+    return shares_list
 
+def create_share_from_row(row) -> Share:
+    date, ticker, money = row
+    return Share(date=date, ticker=ticker, money=money)
